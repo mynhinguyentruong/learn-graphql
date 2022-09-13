@@ -37,8 +37,8 @@ const AuthorType = new GraphQLObjectType({
       name: { type: new GraphQLNonNull(GraphQLString) },
       books: {
         type: new GraphQLList(BookType),
-        resolve: (author) => books.filter(book => book.authorId === author.id)
-      } 
+        resolve: (author) => books.filter((book) => book.authorId === author.id),
+      },
     };
   },
 });
@@ -66,16 +66,23 @@ const RootQueryType = new GraphQLObjectType({
     return {
       book: {
         type: BookType,
-        description: 'A single book',
+        description: "A single book",
         args: {
-          id: {type: GraphQLInt}
+          id: { type: GraphQLInt },
         },
-        resolve: (parent, args) => books.find(book => book.id === args.id)
+        resolve: (parent, args) => books.find((book) => book.id === args.id),
       },
       books: {
         type: new GraphQLList(BookType),
         description: "List of all books",
         resolve: () => books,
+      },
+      author: {
+        type: AuthorType,
+        args: {
+          id: { type: GraphQLInt },
+        },
+        resolve: (parent, args) => authors.find((author) => author.id === args.id)
       },
       authors: {
         type: new GraphQLList(AuthorType),
@@ -91,7 +98,9 @@ const schema = new GraphQLSchema({
   // mutation: RootMutationType
 });
 
-app.use("/graphql", graphqlHTTP({
+app.use(
+  "/graphql",
+  graphqlHTTP({
     schema,
     graphiql: true,
   })
